@@ -3,9 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{.Values.config.configMapName}}
+  name: {{ .Values.config.configMapName }}
 data:
-  config.yaml: |-
-    {{.Values.config.value}}
-
+  config.yaml: {{- .Values.config.value | toYaml | indent 2 -}}
 {{- end }}

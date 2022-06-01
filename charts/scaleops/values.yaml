@@ -11,7 +11,7 @@ image:
   tag: latest
 
 imagePullSecrets:
-  - scaleops
+  - name: scaleops
 
 imageCredentials:
   enabled: true
@@ -78,7 +78,7 @@ prometheusEnabled: true
 config:
   enabled: true
   configMapName: scaleops-config
-  value: |-
+  value: |
     apiVersion: analysis.crane.io/v1alpha1
     kind: ConfigSet
     configs:
