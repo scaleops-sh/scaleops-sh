@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/scaleops-sh/scaleops
+  repository: ghcr.io/scaleops-sh/scaleops-sh
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
@@ -16,8 +16,8 @@ imagePullSecrets:
 imageCredentials:
   enabled: true
   name: scaleops
-  username: github_user
-  password: github_token
+  username: ""
+  password: ""
 
 nameOverride: ""
 fullnameOverride: ""

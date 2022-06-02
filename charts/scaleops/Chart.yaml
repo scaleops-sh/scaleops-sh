@@ -17,6 +17,8 @@ type: application
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 version: 0.5.0
 
+icon: "https://scaleops-sh.github.io/scaleops-sh/SacaleOps-5-transaprent.png"
+
 # This is the list of our dependencies that we need in case we do a single chart deployment
 dependencies:
   - name: prometheus

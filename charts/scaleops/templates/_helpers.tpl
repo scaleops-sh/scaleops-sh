@@ -63,6 +63,6 @@ Create the name of the service account to use
 
 {{- define "imagePullSecret" }}
 {{- with .Values.imageCredentials }}
-{{- printf "{\"auths\":{\"ghcr.io/scaleops-sh\":{\"username\":\"%s\",\"password\":\"%s\",\"auth\":\"%s\"}}}" .username .password (printf "%s:%s" .username .password | b64enc) | b64enc }}
+{{- printf "{\"auths\":{\"ghcr.io/scaleops-sh\":{\"username\":\"%s\",\"password\":\"%s\",\"auth\":\"%s\"}}}" (required "imageCredentials.username must be passed" .username) (required "imageCredentials.password must be passed" .password) (printf "%s:%s" .username .password | b64enc) | b64enc }}
 {{- end }}
 {{- end }}
