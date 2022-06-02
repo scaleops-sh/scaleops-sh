@@ -6,12 +6,12 @@ require_relative "lib/custom_download_strategy"
 class Scaleops < Formula
   desc "ScaleOps CLI."
   homepage "https://scaleops.sh/"
-  version "0.0.3"
+  version "0.0.4"
   license "Private"
 
   on_macos do
-    url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.3/scaleops_0.0.3_darwin_all.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-    sha256 "dc39d322aa1e1c7b2656f724207763dadfa46de5d5c6ba1e470b766325363a16"
+    url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.4/scaleops_0.0.4_darwin_all.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+    sha256 "cff427ebe214b337c5a5530c52b737ec67e73737e3e3247e894f30c96e12b766"
 
     def install
       bin.install "scaleops"
@@ -20,16 +20,16 @@ class Scaleops < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.3/scaleops_0.0.3_linux_arm64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-      sha256 "b9148cc5c0c852a69ca3d7f4933351984256b60081273e2b4b56d18041f68c0d"
+      url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.4/scaleops_0.0.4_linux_arm64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+      sha256 "8c8c9c138ddc94413013ec30278ff5667454fa370cf37d86f2bf1bf7d37960ab"
 
       def install
         bin.install "scaleops"
       end
     end
     if Hardware::CPU.intel?
-      url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.3/scaleops_0.0.3_linux_amd64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-      sha256 "fc1e362fb1bf3ac59340aac1e9b24795d021220b431b7b6bddc41dc45c59219a"
+      url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.4/scaleops_0.0.4_linux_amd64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+      sha256 "ab69ef104b00bebcfbe7c683830d167a17f24ad3c3fb368cbb908ccca08038ed"
 
       def install
         bin.install "scaleops"
