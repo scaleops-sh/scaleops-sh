@@ -50,23 +50,20 @@ spec:
             - name: PROMETHEUS_SERVER_ENDPOINT
               value: {{.Values.prometheusUrl}}
           command:
-            - /craned
+            - /scaleops
             - --prometheus-address={{.Values.prometheusUrl}}
             - --feature-gates=Analysis=true,TimeSeriesPrediction=false,Autoscaling=false,ClusterNodePrediction=false,NodeResource=false
-            - --recommendation-config-file=/config.yaml
+            - --recommendation-config-file=/scaleops-config/config.yaml
             - -v=4
           volumeMounts:
             - name: config
-              mountPath: /config.yaml
+              mountPath: /scaleops-config
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: config
           configMap:
             name: {{.Values.config.configMapName}}
-            items:
-              - key: config.yaml
-                path: config.yaml
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
