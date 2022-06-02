@@ -6,12 +6,12 @@ require_relative "lib/custom_download_strategy"
 class Scaleops < Formula
   desc "ScaleOps CLI."
   homepage "https://scaleops.sh/"
-  version "0.0.3"
+  version "0.0.2"
   license "Private"
 
   on_macos do
-    url "https://github.com/scaleops-sh/scaleops/releases/download/v0.0.3/scaleops_0.0.3_darwin_all.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-    sha256 "beb75752df315dfd400d66d2ec431451fdd3874b7c7c518dcc1e1f3be7310efd"
+    url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.2/scaleops_0.0.2_darwin_all.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+    sha256 "42b00d6b4bb3bb9b64af91865ab37a69958b8361fd80d8becf0006116ea5ba67"
 
     def install
       bin.install "scaleops"
@@ -20,16 +20,16 @@ class Scaleops < Formula
 
   on_linux do
     if Hardware::CPU.intel?
-      url "https://github.com/scaleops-sh/scaleops/releases/download/v0.0.3/scaleops_0.0.3_linux_amd64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-      sha256 "9b76fa75d9de1921623fb515a162ce1364a4ad6d8651f31e46069fa12d4a9be1"
+      url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.2/scaleops_0.0.2_linux_amd64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+      sha256 "6ecf9d1ad6f7d5b26114495fa959f568653df236294f5ec06917d084811d2aae"
 
       def install
         bin.install "scaleops"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/scaleops-sh/scaleops/releases/download/v0.0.3/scaleops_0.0.3_linux_arm64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-      sha256 "55d3569c423d6a2180bfcab9a11ba0ef783441da00a0a858e3fd3949900c2a8a"
+      url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.2/scaleops_0.0.2_linux_arm64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
+      sha256 "39f2d1370003c30da440afc64c8ada1758e92834fc56ce5142271c08ae95115e"
 
       def install
         bin.install "scaleops"
