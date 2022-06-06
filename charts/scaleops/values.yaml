@@ -100,9 +100,8 @@ config:
 
 prometheus:
   pushgateway:
-    pushgateway:
-      enabled: false
-    alertmanager:
+    enabled: false
+  alertmanager:
     enabled: false
   serverFiles:
     ## Records configuration
