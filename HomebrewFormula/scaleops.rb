@@ -11,7 +11,7 @@ class Scaleops < Formula
 
   on_macos do
     url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.5/scaleops_0.0.5_darwin_all.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-    sha256 "af5656f4b124102b34f316f562a5f96ed689c2cb81467428e2c7e4292c76b050"
+    sha256 "3836513f9de0076a097b89ff5b98031620a129f35356ffe5a8a68e07578a0f8d"
 
     def install
       bin.install "scaleops"
@@ -21,7 +21,7 @@ class Scaleops < Formula
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
       url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.5/scaleops_0.0.5_linux_arm64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-      sha256 "25bef472062c27fc44adc941d1fd36527580206e7c0b579c968f6b4ab6615c86"
+      sha256 "d514fdec6ead0ae3f501b880a028f4db3a1200565b0d72e3438a70d94251aa30"
 
       def install
         bin.install "scaleops"
@@ -29,7 +29,7 @@ class Scaleops < Formula
     end
     if Hardware::CPU.intel?
       url "https://github.com/scaleops-sh/scaleops-sh/releases/download/v0.0.5/scaleops_0.0.5_linux_amd64.tar.gz", :using => GitHubPrivateRepositoryReleaseDownloadStrategy
-      sha256 "dc946382bfab5e009e02ccfc0687589e81312aa2444babbc029ceffdec28805d"
+      sha256 "ebbf5f74ff370c496c2b28bd9f1ae301e2fec96d53fd388bd1f6be9fc24f0021"
 
       def install
         bin.install "scaleops"
