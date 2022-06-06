@@ -19,8 +19,6 @@ ScaleOps the best cost optimization framework for K8s
 
 <details><summary>MacOS Via Homebrew</summary>
 
-** This section is valid only during the closed triels
-
 ```sh
 brew tap scaleops-sh/scaleops
 brew install scaleops
