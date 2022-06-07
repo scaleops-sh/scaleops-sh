@@ -19,10 +19,17 @@ ScaleOps the best cost optimization framework for K8s
 
 <details><summary>MacOS Via Homebrew</summary>
 
-```sh
-brew tap scaleops-sh/scaleops
-brew install scaleops
-scaleops install --token=*****
+```shell
+HOMEBREW_SCALEOPS_TOKEN=***** brew install scaleops-sh/scaleops/scaleops
+scaleops system install --token *****
 ```
+
+Or
+```shell
+brew tap scaleops-sh/scaleops
+HOMEBREW_SCALEOPS_TOKEN=***** brew install scaleops
+scaleops system install --token *****
+```
+
 
 </details>
