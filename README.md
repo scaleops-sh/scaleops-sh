@@ -11,7 +11,7 @@ ScaleOps the best cost optimization framework for K8s
 
 ### Pre Requisites
 
-1. Make use you have proper credentials set to access k8s [^1]
+1. Make sure you have proper credentials set to access k8s [^1]
 2. Get scaleops `token` from your account manager [^2]
 
 [^1]: In case you have not installed `helm 3` or `kubectl`, and you are using one of our package installations we would install them as dependencies.
