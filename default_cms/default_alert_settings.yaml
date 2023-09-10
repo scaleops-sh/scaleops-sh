@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  alertSettings: '{"WorkloadRequestIncrease":{"parameters":{"step":20,"interval":1440,"window":1440,"threshold":0.2},"enabled":true},"CpuThrottling":{"parameters":{"interval":240,"window":240,"threshold":0.6,"step":3},"enabled":true},"OutOfMemory":{"parameters":{"interval":30,"window":30,"threshold":3,"step":5},"enabled":true},"OverProvisioned":{"parameters":{"interval":1440,"window":1440,"threshold":0.7},"enabled":true},"UnderProvisioned":{"parameters":{"interval":720,"window":1440,"threshold":0.4},"enabled":true}}'
+  label: ""
+kind: ConfigMap
+metadata:
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/resource-policy: keep
+  name: scaleops-alert-settings
+  namespace: scaleops-system
