@@ -112,7 +112,7 @@ fi
 for entry in "${targets[@]}"; do
   ns="${entry%;*}"
   name="${entry#*;}"
-  cmd="kubectl patch $KIND \"$name\" -n \"$ns\" --type=merge -p '{\"spec\":{\"Automation\":null}}'"
+  cmd="kubectl patch $KIND \"$name\" -n \"$ns\" --type=merge -p '{\"spec\":{\"Automation\":{\"automatedBy\":null, \"attachPolicyBy\":null}}}'"
 
   echo "🔧 Target: $KIND/$name in namespace $ns"
   if [[ "$DRY_RUN" == true ]]; then
