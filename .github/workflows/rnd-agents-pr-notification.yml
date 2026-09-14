@@ -1,0 +1,160 @@
+name: RnD Agents PR Merge Notification
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  notify-slack:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check if PR is from rnd-agents
+        id: check_author
+        run: |
+          author="${{ github.event.pull_request.user.login }}"
+          echo "Author: $author"
+          
+          # Check if author is rnd-agents or contains "cursor" or "agent"
+          if [[ "$author" == *"rnd-agents"* ]] || [[ "$author" == *"cursor"* ]] || [[ "$author" == *"agent"* ]]; then
+            echo "is_rnd_agent=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_rnd_agent=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract PR metadata and send to Slack
+        if: steps.check_author.outputs.is_rnd_agent == 'true'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
+          PR_USER_LOGIN: ${{ github.event.pull_request.user.login }}
+          GITHUB_USER_TO_SLACK_MAPPING: ${{ secrets.GITHUB_USER_TO_SLACK_MAPPING }}
+        run: |
+          # Extract PR type from labels or title
+          TYPE=""
+          if echo "$PR_LABELS" | jq -r '.[].name' | grep -qi "security\|sec"; then
+            TYPE="SEC"
+          elif echo "$PR_LABELS" | jq -r '.[].name' | grep -qi "feature\|enhancement"; then
+            TYPE="FR"
+          elif echo "$PR_LABELS" | jq -r '.[].name' | grep -qi "bug\|fix"; then
+            TYPE="BUG"
+          else
+            # Try to extract from title
+            if echo "$PR_TITLE" | grep -qiE "^\[?(SEC|SECURITY)\]?"; then
+              TYPE="SEC"
+            elif echo "$PR_TITLE" | grep -qiE "^\[?(FR|FEATURE)\]?"; then
+              TYPE="FR"
+            elif echo "$PR_TITLE" | grep -qiE "^\[?(BUG|FIX)\]?"; then
+              TYPE="BUG"
+            else
+              TYPE="CHANGE"
+            fi
+          fi
+          
+          # Extract ticket ID (RD-XXXXX) from title
+          TICKET_ID=$(echo "$PR_TITLE" | grep -oE 'RD-[0-9]+' | head -1)
+          if [ -z "$TICKET_ID" ]; then
+            TICKET_ID="RD-?????"
+          fi
+          
+          # Extract version from PR body or labels
+          VERSION=$(echo "$PR_BODY" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          if [ -z "$VERSION" ]; then
+            VERSION=$(echo "$PR_LABELS" | jq -r '.[].name' | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          fi
+          if [ -z "$VERSION" ]; then
+            VERSION="vX.XX.X"
+          fi
+          
+          # Extract brief description (first line or summary)
+          BRIEF=$(echo "$PR_TITLE" | sed -E "s/\[?(SEC|FR|BUG|SECURITY|FEATURE|FIX)\]?\s*//i" | sed -E "s/\[?RD-[0-9]+\]?\s*//i" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          if [ -z "$BRIEF" ]; then
+            BRIEF=$(echo "$PR_BODY" | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+          fi
+          
+          # Check if raised by customer
+          CUSTOMER_RAISED="No"
+          if echo "$PR_LABELS" | jq -r '.[].name' | grep -qi "customer"; then
+            CUSTOMER_RAISED="Yes"
+          elif echo "$PR_BODY" | grep -qi "customer.*raised\|raised.*customer\|customer.*reported"; then
+            CUSTOMER_RAISED="Yes"
+          fi
+          
+          # Extract owner from PR assignees or author
+          OWNER_NAME="${{ github.event.pull_request.user.name }}"
+          OWNER_LOGIN="${{ github.event.pull_request.user.login }}"
+          if [ -z "$OWNER_NAME" ] || [ "$OWNER_NAME" == "null" ]; then
+            OWNER_NAME="$OWNER_LOGIN"
+          fi
+          
+          # Try to get assignee if available
+          ASSIGNEE_NAME="${{ github.event.pull_request.assignee.name }}"
+          ASSIGNEE_LOGIN="${{ github.event.pull_request.assignee.login }}"
+          if [ -n "$ASSIGNEE_NAME" ] && [ "$ASSIGNEE_NAME" != "null" ]; then
+            OWNER_NAME="$ASSIGNEE_NAME"
+            OWNER_LOGIN="$ASSIGNEE_LOGIN"
+          fi
+          
+          # Map GitHub user to Slack user ID
+          SLACK_USER_ID=""
+          if [ -n "$GITHUB_USER_TO_SLACK_MAPPING" ]; then
+            SLACK_USER_ID=$(echo "$GITHUB_USER_TO_SLACK_MAPPING" | jq -r --arg login "$OWNER_LOGIN" '.[$login] // empty')
+          fi
+          
+          # Format owner mention
+          if [ -n "$SLACK_USER_ID" ]; then
+            OWNER_TEXT="($OWNER_NAME)<@$SLACK_USER_ID>"
+          else
+            OWNER_TEXT="($OWNER_NAME) @$OWNER_LOGIN"
+          fi
+          
+          # Escape special characters for JSON
+          BRIEF_ESCAPED=$(echo "$BRIEF" | jq -Rs .)
+          OWNER_TEXT_ESCAPED=$(echo "$OWNER_TEXT" | jq -Rs .)
+          
+          # Format the Slack message
+          MESSAGE="[$TYPE][$TICKET_ID] Added new content to main for versions \`$VERSION\`\n• *Brief*: ${BRIEF_ESCAPED:1:-1}\n• *Raised by customer*: $CUSTOMER_RAISED\n• *Owner*: ${OWNER_TEXT_ESCAPED:1:-1}"
+          
+          echo "Sending message to Slack:"
+          echo "$MESSAGE"
+          
+          # Create JSON payload
+          cat > /tmp/slack_payload.json <<EOF
+{
+  "channel": "C06MF986B54",
+  "text": "[$TYPE][$TICKET_ID] Added new content to main for versions $VERSION",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "$MESSAGE"
+      }
+    }
+  ]
+}
+EOF
+          
+          # Send to Slack using Web API
+          response=$(curl -s -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer $SLACK_BOT_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d @/tmp/slack_payload.json)
+          
+          echo "Slack API response: $response"
+          
+          # Check if the message was sent successfully
+          if echo "$response" | jq -e '.ok == true' > /dev/null; then
+            echo "✅ Message sent successfully to Slack"
+          else
+            echo "❌ Failed to send message to Slack"
+            echo "$response" | jq .
+            exit 1
+          fi
